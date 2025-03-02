@@ -2,7 +2,7 @@ import { http, delay, HttpResponse } from 'msw';
 
 export const handlers = [
   http.get('/info', async () => {
-    // await delay(600);
+    await delay(700);
 
     return HttpResponse.json({ 
       success: true, 

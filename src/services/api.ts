@@ -5,7 +5,7 @@ export async function getInfo() {
   const result = await response.json();
 
   if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
+    throw new Error(`There is no connection to the server, try again!`);
   }
 
   return result;
