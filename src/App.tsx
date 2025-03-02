@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
-import InitialPage from './pages/InitialPage/InitialPage';
+import InitialPage from './pages/InitialPage';
+import LoginPage from './pages/LoginPage';
 
 const App: React.FC = () => {
   return (
@@ -8,7 +9,7 @@ const App: React.FC = () => {
       <Navigation />
       <Routes>
         <Route path="/" element={<InitialPage />}/>
-        <Route path="/login" />
+        <Route path="/login" element={<LoginPage />}/>
         <Route path="/profile" />
       </Routes>
     </>

@@ -1,5 +1,5 @@
 import { Box, CircularProgress } from '@mui/material';
-import useInfo from '../../hooks/use-info';
+import useInfo from '../hooks/use-info';
 
 const InitialPage = () => {
   const { info, error, loading } = useInfo()
