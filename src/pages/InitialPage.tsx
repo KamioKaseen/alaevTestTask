@@ -1,17 +1,29 @@
 import { Box, CircularProgress } from '@mui/material';
-import useInfo from '../hooks/use-info';
+import { useQuery } from '@tanstack/react-query';
+import { getInfo } from '../services/api';
+import parse from 'html-react-parser';
+
+interface InfoResponse {
+  data: { info: string };
+}
 
 const InitialPage = () => {
-  const { info, error, loading } = useInfo()
- 
+  const { data, isLoading, error } = useQuery<InfoResponse, Error>({
+    queryKey: ['info'],
+    queryFn: () => {
+      console.log('Fetching info from API');
+      return getInfo();
+    },
+  });
+
   return (
     <Box sx={{ textAlign: 'center', fontSize: 30 }}>
-      {loading ? (
-        <CircularProgress />
+      {isLoading ? (
+        <CircularProgress sx={{mt: 4}}/>
       ) : error ? (
-        <p>{error}</p>
+        <p>{error.message}</p>
       ) : (
-        <p dangerouslySetInnerHTML={{ __html: info }} />
+        <p>{parse(data!.data.info)}</p>
       )}
     </Box>
   );
