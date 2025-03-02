@@ -35,7 +35,7 @@ function useInfo(): UseInfoHook {
     };
 
     fetchInfo();
-  }, []);
+  }, [info]);
 
   return { info, error, loading };
 }
