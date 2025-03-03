@@ -31,4 +31,11 @@ export const handlers = [
       }, { status: 401 });
     }
   }),
+
+  http.delete('/logout?token=[token]', async () => {
+    return HttpResponse.json({ 
+      success: true, 
+      data: {} 
+    });
+  }),
 ];

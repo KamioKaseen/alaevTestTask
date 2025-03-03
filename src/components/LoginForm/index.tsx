@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth } from '../../context/authContext';
 import {
   Box,
   Button,
@@ -10,19 +11,16 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { login } from '../../services/api';
 
-interface LoginResponse {
-  token: string;
-}
-
 const LoginForm = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { setToken } = useAuth();
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: () => login(email, password),
-    onSuccess: (data: LoginResponse) => {
-      console.log(data.token);
+    onSuccess: (data) => {
+      setToken(data.data.token);
       navigate('/profile');
     },
   });
