@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getInfo } from '../services/api';
 import parse from 'html-react-parser';
 
+// Todo: перенести в типы
 interface InfoResponse {
   data: { info: string };
 }
