@@ -4,6 +4,7 @@ import InitialPage from './pages/InitialPage';
 import LoginPage from './pages/LoginPage';
 import AuthRoute from './components/AuthRoute';
 import AuthProvider from './context/authContext';
+import ProfilePage from './pages/ProfilePage';
 
 const App: React.FC = () => {
   return (
@@ -16,7 +17,7 @@ const App: React.FC = () => {
           path="/profile" 
           element={
             <AuthRoute>
-              <p>Прувет</p>
+              <ProfilePage />
             </AuthRoute>
           }/>
       </Routes>

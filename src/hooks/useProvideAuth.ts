@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { logoutApi } from '../services/api';
 import { useMutation } from '@tanstack/react-query';
-import { ApiResponse } from '../components/types';
+import { ApiResponse } from '../types';
 
 export const useProvideAuth = () => {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
