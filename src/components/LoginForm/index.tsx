@@ -37,7 +37,7 @@ const LoginForm = () => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        maxWidth: 400,
+        width: { lg: 400, sm: 'auto' },
         mx: 'auto',
         mt: 4,
         p: 4,
@@ -85,7 +85,7 @@ const LoginForm = () => {
         type="submit"
         variant="contained"
         size="large"
-        disabled={isPending}
+        disabled={isPending || !email.trim() || !password.trim()}
       >
         Sign In
       </Button>

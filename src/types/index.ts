@@ -4,6 +4,10 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
+export interface InfoResponse {
+  data: { info: string };
+}
+
 export interface LoginResponse {
   token: string;
 }

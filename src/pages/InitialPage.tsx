@@ -1,30 +1,23 @@
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getInfo } from '../services/api';
 import parse from 'html-react-parser';
-
-// Todo: перенести в типы
-interface InfoResponse {
-  data: { info: string };
-}
+import { InfoResponse } from '../types';
 
 const InitialPage = () => {
   const { data, isLoading, error } = useQuery<InfoResponse, Error>({
     queryKey: ['info'],
-    queryFn: () => {
-      console.log('Fetching info from API');
-      return getInfo();
-    },
+    queryFn: () => getInfo()
   });
 
   return (
-    <Box sx={{ textAlign: 'center', fontSize: 30 }}>
+    <Box sx={{ textAlign: 'center'}}>
       {isLoading ? (
         <CircularProgress sx={{mt: 4}}/>
       ) : error ? (
-        <p>{error.message}</p>
+        <Typography>{error.message}</Typography>
       ) : (
-        <p>{parse(data!.data.info)}</p>
+        <Typography fontSize={33}>{parse(data!.data.info)}</Typography>
       )}
     </Box>
   );

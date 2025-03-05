@@ -10,17 +10,23 @@ interface AuthorAndQuote {
   modal: JSX.Element;
 } 
 
+// Хук возвращает:
+// - функцию обновления автора и цитаты
+// - JSX-текс(автор/цитата)
+// - JSX-модальное окно
 function useAuthorAndQuote(token: string): AuthorAndQuote  {
   const [open, setOpen] = useState(false);
   const [author, setAuthor] = useState<string | null>(null);
   const [quote, setQuote] = useState<string | null>(null);
 
+  // Общий аборконтроллер для отмены запроса
   const previousAuthorRef = useRef<string | null>(null);
    const abortControllerRef = useRef<{
      author?: AbortController;
      quote?: AbortController;
    }>({});
 
+  // Запрос к автору
   const authorMutation = useMutation({
     mutationFn: async () => {
       abortControllerRef.current.author = new AbortController();
@@ -29,13 +35,13 @@ function useAuthorAndQuote(token: string): AuthorAndQuote  {
     onMutate: () => {
       previousAuthorRef.current = author;
     },
-  
     onError: (error: Error) => {
       setAuthor(previousAuthorRef.current);
       console.error(error.message);
     },
   });
 
+  // Запрос к цитате
   const quoteMutation = useMutation({
     mutationFn: async (authorId: number) => {
       abortControllerRef.current.quote = new AbortController();
@@ -45,6 +51,7 @@ function useAuthorAndQuote(token: string): AuthorAndQuote  {
         abortControllerRef.current.quote.signal
       );
     },
+    // Если запрос успешен, то обновляется стейт автора и цитаты для отображения в UI
     onSuccess: (data) => {
       setAuthor(authorMutation.data?.data.name || null);
       setQuote(data.data.quote);
@@ -56,15 +63,16 @@ function useAuthorAndQuote(token: string): AuthorAndQuote  {
     },
   });
 
-  console.log(authorMutation.isSuccess);
-  
 
   const handleUpdate = async () => {
+    // Открывается модалка при апдейте
     setOpen(true);
 
+    // Сбрасывается состояние isPending
     authorMutation.reset();
     quoteMutation.reset();
 
+    // Поочередный вызов запроса автора и цитаты
     const authorResult = await authorMutation.mutateAsync();
     await quoteMutation.mutateAsync(authorResult.data.authorId);
   };
@@ -76,6 +84,8 @@ function useAuthorAndQuote(token: string): AuthorAndQuote  {
     if (abortControllerRef.current.quote) {
       abortControllerRef.current.quote.abort();
     }
+
+    // Модалка закрывается при отмене
     setOpen(false);
   };
 
@@ -88,13 +98,13 @@ function useAuthorAndQuote(token: string): AuthorAndQuote  {
   
   const modal = (
     <ProfileModal 
-    open={open} 
-    authorIsSuccess={authorMutation.isSuccess}
-    quoteIsSuccess={quoteMutation.isSuccess}
-    authorLoading={authorMutation.isPending}
-    quoteLoading={quoteMutation.isPending}
-    cancel={handleCancel}
-  />
+      open={open} 
+      authorIsSuccess={authorMutation.isSuccess}
+      quoteIsSuccess={quoteMutation.isSuccess}
+      authorLoading={authorMutation.isPending}
+      quoteLoading={quoteMutation.isPending}
+      cancel={handleCancel}
+    />
   )
 
   return { 
