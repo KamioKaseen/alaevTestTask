@@ -37,7 +37,7 @@ const LoginForm = () => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        maxWidth: 400,
+        width: { lg: 400, sm: 'auto' },
         mx: 'auto',
         mt: 4,
         p: 4,

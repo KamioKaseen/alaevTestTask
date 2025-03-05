@@ -1,82 +1,51 @@
-import { ApiResponse } from "../types";
-import { LoginResponse } from "../types";
-import { ProfileResponse } from "../types";
-import { AuthorResponse } from "../types";
-import { QuoteResponse } from "../types";
+import axios, { AxiosRequestConfig } from 'axios';
+import { ApiResponse, LoginResponse, ProfileResponse, AuthorResponse, QuoteResponse } from '../types';
 
 const API_BASE = 'http://localhost:5173';
-const error = new Error(`There is no connection to the server, try again!`);
 
-export async function getInfo(): Promise<ApiResponse<{info: string}>> {
-  const response = await fetch(`${API_BASE}/info`);
-  const result = await response.json();
+const api = axios.create({
+  baseURL: API_BASE,
+  headers: { 'Content-Type': 'application/json' },
+});
 
-  if (!result.success) throw error;
-  return result;
+class ApiError extends Error {
+  constructor(public status: number, message: string) {
+    super(message);
+    this.name = 'ApiError';
+  }
 }
 
-export async function getProfile(token: string): Promise<ApiResponse<ProfileResponse>> {
-  const response = await fetch(`${API_BASE}/profile?token=${token}`);
-  const result = await response.json();
-
-  if (!result.success) throw error;
-  return result;
-}
-
-export async function getAuthor(token: string, signal?: AbortSignal): Promise<ApiResponse<AuthorResponse>> {
+async function apiRequest<T>(endpoint: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
   try {
-    const response = await fetch(`${API_BASE}/author?token=${token}`, { signal });
-    const result = await response.json();
-    if (!result.success) throw new Error(result.data?.message || 'Failed to fetch author');
-    return result;
-  } catch (error) {
-    if(error instanceof Error)
-    if (error.name === 'AbortError') {
-      throw new Error('Request author aborted');
+    const { data, status } = await api.request<ApiResponse<T>>({ url: endpoint, ...config });
+    
+    if (!data.success) {
+      throw new ApiError(status, data.message || 'Request failed');
     }
-    throw error;
-  }
-}
 
-export async function getQuote(token: string, authorId: number, signal?: AbortSignal): Promise<ApiResponse<QuoteResponse>> {
-  try {
-    const response = await fetch(`${API_BASE}/quote?token=${token}&authorId=${authorId}`, { signal });
-    const result = await response.json();
-    if (!result.success) throw new Error(result.data?.message || 'Failed to fetch quote');
-    return result;
-  } catch (error: unknown) {
-    if(error instanceof Error)
-    if (error.name === 'AbortError') {
-      throw new Error('Request quote aborted');
+    return data;
+  } 
+  catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new ApiError(error.response?.status || 500, error.response?.data?.message || error.message);
     }
-    throw error;
+    throw new ApiError(500, 'Unknown error');
   }
 }
 
-export async function login(email: string, password: string): Promise<ApiResponse<LoginResponse>> {
-  const response = await fetch(`${API_BASE}/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-  });
+export const getInfo = () => apiRequest<{ info: string }>('/info');
 
-  const result = await response.json();
+export const getProfile = (token: string) =>
+  apiRequest<ProfileResponse>('/profile', { params: { token } });
 
-  if (!response.ok) {
-    throw new Error(result.message);
-  }
+export const getAuthor = (token: string, signal?: AbortSignal) =>
+  apiRequest<AuthorResponse>('/author', { params: { token }, signal });
 
-  return result;
-}
+export const getQuote = (token: string, authorId: number, signal?: AbortSignal) =>
+  apiRequest<QuoteResponse>('/quote', { params: { token, authorId }, signal });
 
-export async function logoutApi(token: string): Promise<ApiResponse<object>> {
-  const response = await fetch(`${API_BASE}/logout?token=${token}`, {
-    method: 'DELETE',
-  });
+export const login = (email: string, password: string) =>
+  apiRequest<LoginResponse>('/login', { method: 'POST', data: { email, password } });
 
-  const result = await response.json();
-
-  return result;
-}
+export const logoutApi = (token: string) =>
+  apiRequest<object>('/logout', { method: 'DELETE', params: { token } });
