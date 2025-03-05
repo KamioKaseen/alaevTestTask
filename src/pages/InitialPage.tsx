@@ -11,10 +11,7 @@ interface InfoResponse {
 const InitialPage = () => {
   const { data, isLoading, error } = useQuery<InfoResponse, Error>({
     queryKey: ['info'],
-    queryFn: () => {
-      console.log('Fetching info from API');
-      return getInfo();
-    },
+    queryFn: () => getInfo()
   });
 
   return (

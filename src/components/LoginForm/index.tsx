@@ -85,7 +85,7 @@ const LoginForm = () => {
         type="submit"
         variant="contained"
         size="large"
-        disabled={isPending}
+        disabled={isPending || !email.trim() || !password.trim()}
       >
         Sign In
       </Button>
