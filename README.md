@@ -1,41 +1,18 @@
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Старт проекта
+
+```
+npm run dev
+```
+## Запуск тестов
+
+```
+npm run test
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Технологии
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- **TanStack Query** - для удобной работы с запросами, состояниями, ошибками и кешированием. Решил использовать, так как требовалось уменьшить количество шаблонного кода. В маленьком проекте использовать бы не стал.
+- **html-react-parser** - для безопасного парсинга текстовых данных с тегами. Не стал переизобретать велосипед и писать собственный код для парсинга.
+- **axios** - для работы с API, что немного сократитить код. Скорее всего, это ненужное решение, так как я не задействовал основные возможности (например, `interceptors`).
+- **vitest** и **React Testing Library** - для тестирования.
+- **MUI** - для упрощения работы с версткой.
