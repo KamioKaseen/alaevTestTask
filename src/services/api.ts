@@ -1,10 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { ApiResponse, LoginResponse, ProfileResponse, AuthorResponse, QuoteResponse } from '../types';
 
-const API_BASE = 'http://localhost:5173';
-
 const api = axios.create({
-  baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' },
 });
 

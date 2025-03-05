@@ -24,16 +24,29 @@ export const handlers = [
     });
   }),
 
-  http.get('/profile?token=[token]', async () => {
+  http.get('/profile', async ({ request }) => {
     await delay(700);
+    const url = new URL(request.url);
+    const token = url.searchParams.get('token');
+
+    if (!token) {
+      return HttpResponse.json({ success: false, message: "Missing token" }, { status: 400 });
+    }
+
     return HttpResponse.json({ 
       success: true, 
       data: { fullname: "Aleksei K", email: "aleksei@example.com" } 
     });
   }),
 
-  http.get('/author?token=[token]', async () => {
+  http.get('/author', async ({ request }) => {
     await delay(1000);
+    const url = new URL(request.url);
+    const token = url.searchParams.get('token');
+
+    if (!token) {
+      return HttpResponse.json({ success: false, message: "Missing token" }, { status: 400 });
+    }
 
     const randomAuthor = authors[Math.floor(Math.random() * authors.length)];
 
@@ -43,10 +56,16 @@ export const handlers = [
     });
   }),
 
-  http.get('/quote?token=[token]&authorId=[authorId]', async ({ request }) => {
+  http.get('/quote', async ({ request }) => {
     await delay(1000);
     const url = new URL(request.url);
+    const token = url.searchParams.get('token');
     const authorId = parseInt(url.searchParams.get('authorId') || '0', 10);
+
+    if (!token) {
+      return HttpResponse.json({ success: false, message: "Missing token" }, { status: 400 });
+    }
+
     const authorQuotes = quotes.filter(q => q.authorId === authorId);
     if (authorQuotes.length === 0) {
       return HttpResponse.json({ 
@@ -77,7 +96,14 @@ export const handlers = [
     }
   }),
 
-  http.delete('/logout?token=[token]', async () => {
+  http.delete('/logout', async ({ request }) => {
+    const url = new URL(request.url);
+    const token = url.searchParams.get('token');
+
+    if (!token) {
+      return HttpResponse.json({ success: false, message: "Missing token" }, { status: 400 });
+    }
+
     return HttpResponse.json({ 
       success: true, 
       data: {} 
