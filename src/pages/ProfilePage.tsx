@@ -8,7 +8,7 @@ const ProfilePage = () => {
   const { token } = useAuth();
   const { handleUpdate, text, modal } = useAuthorAndQuote(token!);
 
-  const { data: profileData, isLoading: isProfileLoading } = useQuery({
+  const { data: profileData, error, isLoading: isProfileLoading } = useQuery({
     queryKey: ['profile'],
     queryFn: () => getProfile(token!),
   });
@@ -27,6 +27,8 @@ const ProfilePage = () => {
           </Button>
         </>
       )}
+
+      {error && <Typography color="error">{(error as Error).message}</Typography>}
 
       {text}
       {modal}
